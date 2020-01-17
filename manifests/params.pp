@@ -32,4 +32,5 @@ class elkstack::params {
   }
   $service_name           = [ 'elasticsearch', 'kibana', 'logstash' ]
   $with_nginx             = true
+  $with_repo              = true
 }
