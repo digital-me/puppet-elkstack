@@ -9,6 +9,9 @@ class elkstack::config (
   $logstash_config_input  = $::elkstack::logstash_config_input,
   $logstash_config_filter = $::elkstack::logstash_config_filter,
   $with_nginx             = $::elkstack::with_nginx,
+  $es_conf_dir            = $::elkstack::es_conf_dir,
+  $kibana_conf_dir        = $::elkstack::kibana_conf_dir,
+  $logstash_conf_dir      = $::elkstack::logstash_conf_dir,
 ){
   if $with_nginx {
     file {'kibana nginx config':
@@ -21,7 +24,7 @@ class elkstack::config (
   file_line { 'elasticsearch url for kibana':
     ensure => present,
     line   => 'elasticsearch.url: "http://localhost:9200"',
-    path   => '/opt/kibana/config/kibana.yml',
+    path   => "${kibana_conf_dir}/kibana.yml",
     notify => Service['kibana'],
   }
 
@@ -29,7 +32,7 @@ class elkstack::config (
     file_line { $line:
       ensure => present,
       line   => $line,
-      path   => '/opt/kibana/config/kibana.yml',
+      path   => "${kibana_conf_dir}/kibana.yml",
       notify => Service['kibana'],
     }
   }
@@ -37,13 +40,13 @@ class elkstack::config (
     file_line { $line:
       ensure => present,
       line   => $line,
-      path   => '/etc/elasticsearch/elasticsearch.yml',
+      path   => "${es_conf_dir}/elasticsearch.yml",
       notify => Service['elasticsearch'],
     }
   }
   if ($logstash_config_input != '') {
     $logstash_config_input.each |$conf_file, $contents| {
-      file { "/etc/logstash/conf.d/${conf_file}-input.conf":
+      file { "${logstash_conf_dir}/${conf_file}-input.conf":
         ensure  => present,
         content => template('elkstack/logstash.input.conf.erb'),
       }
@@ -51,7 +54,7 @@ class elkstack::config (
   }
   if ($logstash_config_output != '') {
     $logstash_config_output.each |$conf_file, $contents| {
-      file { "/etc/logstash/conf.d/${conf_file}-output.conf":
+      file { "${logstash_conf_dir}/${conf_file}-output.conf":
         ensure  => present,
         content => template('elkstack/logstash.output.conf.erb'),
       }
@@ -59,7 +62,7 @@ class elkstack::config (
   }
   if ($logstash_config_filter != '') {
     $logstash_config_filter.each |$conf_file, $contents| {
-      file { "/etc/logstash/conf.d/${conf_file}-filter.conf":
+      file { "${logstash_conf_dir}/${conf_file}-filter.conf":
         ensure  => present,
         content => template('elkstack/logstash.filter.conf.erb'),
       }

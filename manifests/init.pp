@@ -54,13 +54,19 @@ class elkstack (
   $logstash_config_input  = $::elkstack::params::logstash_config_input,
   $logstash_config_output = $::elkstack::params::logstash_config_output,
   $with_nginx             = $::elkstack::params::with_nginx,
+  $with_repo              = $::elkstack::params::with_repo,
+  $with_prefix            = $::elkstack::params::with_prefix,
+  $root_dir               = $::elkstack::params::root_dir,
+  $es_conf_dir            = $::elkstack::params::es_conf_dir,
+  $kibana_conf_dir        = $::elkstack::params::kibana_conf_dir,
+  $logstash_conf_dir      = $::elkstack::params::logstash_conf_dir,
 ) inherits ::elkstack::params {
   class {'::elkstack::install': } ->
+  class {'::elkstack::plugins': } ->
   class {'::elkstack::config': } ~>
   class {'::elkstack::service': }
-  class {'::elkstack::plugins': }
   contain '::elkstack::install'
+  contain '::elkstack::plugins'
   contain '::elkstack::config'
   contain '::elkstack::service'
-  contain '::elkstack::plugins'
 }

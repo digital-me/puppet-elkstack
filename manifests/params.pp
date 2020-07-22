@@ -32,4 +32,10 @@ class elkstack::params {
   }
   $service_name           = [ 'elasticsearch', 'kibana', 'logstash' ]
   $with_nginx             = true
+  $with_repo              = true
+  $root_dir               = '/opt'
+  $es_conf_dir            = '/etc/elasticsearch'
+  $kibana_conf_dir        = "$root_dir/kibana/config"
+  $logstash_conf_dir      = '/etc/logstash/conf.d'
+  $with_prefix            = false
 }
